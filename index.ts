@@ -1,16 +1,31 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { MongoClient } from 'mongodb';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerDocument from './api/api.json';
 
 
 dotenv.config();
 
+// Set up express
 const app: Express = express();
-const port = process.env.PORT;
+// const port = process.env.PORT;
+const port = 3000; // fix this later lol
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
-const dbName = 'blog'
 
+// connect database 
+client.connect();
+const dbName = 'blog'
+const db = client.db(dbName);
+
+
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {explorer: true})
+);
 
 
 app.get('/', (req: Request, res: Response) => {
@@ -19,14 +34,9 @@ app.get('/', (req: Request, res: Response) => {
 
 // require some authentication or something probably 
 app.get('/testDB', async (req: Request, res: Response) => {
-  await client.connect();
-  console.log("Successfully Connected to Server");
-  const db = client.db(dbName);
   const collection = db.collection("test");
   const elements = await collection.find({}).toArray()
-  console.log(elements);
-  
-  res.status(201).send("testDB successful");
+  res.status(201).send(elements);
 });
 
 app.listen(port, () => {
