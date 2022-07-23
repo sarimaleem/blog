@@ -4,6 +4,7 @@ import { MongoClient, ObjectId } from "mongodb";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./api/api.json";
 import type { WithId, Document } from "mongodb";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -11,8 +12,12 @@ dotenv.config();
 const app: Express = express();
 // const port = process.env.PORT;
 const port = 3000; // fix this later lol
-const url = "mongodb://localhost:27017";
+const url = "mongodb://localhost:27017"; // maybe fix this? I think it might matter if the url is exposed
 const client = new MongoClient(url);
+
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.text({ type: "text/markdown" }));
+app.use(bodyParser.json());
 
 // connect database
 client.connect();
@@ -22,7 +27,15 @@ const db = client.db(dbName);
 interface Post extends WithId<Document> {
   _id: ObjectId;
   html: string;
+  text: string;
   title: string;
+}
+
+interface BlogPostRequest {
+  title: string;
+  text: string;
+  // author: string;
+  // tags: Array<string>;
 }
 
 app.use(
@@ -32,7 +45,7 @@ app.use(
 );
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("this is a typescript app");
+  res.send("home page will go here at one point");
 });
 
 // require some authentication or something probably
@@ -42,20 +55,35 @@ app.get("/testDB", async (req: Request, res: Response) => {
   res.status(201).send(elements);
 });
 
-app.post("/publicPost", (req: Request, res: Response) => {
-  // convert markdown to html
-  // IDK the actual status
-  res.status(204).send("Created Successfully");
+app.post("/post", (req: Request, res: Response) => {
+  // if(req.headers["content-type"] !== "text/markdown") {
+  //   res.status(415).send("Content Type must be text markdown in HTML header")
+  // }
+  const posts = db.collection("posts");
+  const postRequest = req.body as BlogPostRequest;
+  const dbInsert : Post = {_id: new ObjectId(), "title" : postRequest.title, "text" : postRequest.text, "html" : postRequest.text}; 
+
+  // TODO add exists check
+  // TODO convert to html
+
+  if (postRequest == null) {
+    res.status(404).send("Something Wrong");
+  }
+
+  posts.insertOne(dbInsert);
+
+  res.status(204).send(req.body);
 });
 
 app.get("/post/:post", async (req: Request, res: Response) => {
-  const collection = db.collection("posts");
-  const post: Post = await collection.findOne({title: req.params.post,}) as Post ?? 
-    {
-      _id: new ObjectId(),
-      html: "page not found",
-      title: "page not found",
-    };
+  const posts = db.collection("posts");
+  const post: Post = (await posts.findOne({
+    title: req.params.post,
+  })) as Post;
+
+  if (post === null) {
+    res.send("page not found");
+  }
 
   res.send(post.html);
 });

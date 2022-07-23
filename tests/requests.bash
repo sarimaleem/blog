@@ -1,0 +1,1 @@
+curl -X POST localhost:3000/publicPost -H "Content-Type: application/json" -d '{\"title\": \"hi\"}'
