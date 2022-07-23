@@ -5,24 +5,26 @@ import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./api/api.json";
 import type { WithId, Document } from "mongodb";
 import bodyParser from "body-parser";
+import showdown from "showdown";
 
 dotenv.config();
 
 // Set up express
 const app: Express = express();
-// const port = process.env.PORT;
-const port = 3000; // fix this later lol
-const url = "mongodb://localhost:27017"; // maybe fix this? I think it might matter if the url is exposed
-const client = new MongoClient(url);
-
+const port = process.env.PORT || 3000;
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.text({ type: "text/markdown" }));
 app.use(bodyParser.json());
 
-// connect database
+// set up mongo
+const url = "mongodb://localhost:27017"; // maybe fix this? I think it might matter if the url is exposed
+const client = new MongoClient(url);
 client.connect();
 const dbName = "blog";
 const db = client.db(dbName);
+
+// set up showdown
+const converter = new showdown.Converter();
 
 interface Post extends WithId<Document> {
   _id: ObjectId;
@@ -61,10 +63,14 @@ app.post("/post", (req: Request, res: Response) => {
   // }
   const posts = db.collection("posts");
   const postRequest = req.body as BlogPostRequest;
-  const dbInsert : Post = {_id: new ObjectId(), "title" : postRequest.title, "text" : postRequest.text, "html" : postRequest.text}; 
+  const dbInsert: Post = {
+    _id: new ObjectId(),
+    title: postRequest.title,
+    text: postRequest.text,
+    html: converter.makeHtml(postRequest.text),
+  };
 
   // TODO add exists check
-  // TODO convert to html
 
   if (postRequest == null) {
     res.status(404).send("Something Wrong");
@@ -76,6 +82,8 @@ app.post("/post", (req: Request, res: Response) => {
 });
 
 app.get("/post/:post", async (req: Request, res: Response) => {
+  console.log("Post Request");
+  
   const posts = db.collection("posts");
   const post: Post = (await posts.findOne({
     title: req.params.post,
