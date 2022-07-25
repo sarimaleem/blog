@@ -23,3 +23,8 @@ date published
 last date updated
 tags
 private/public
+
+## TODO: 
+* all the features above
+* add basic html and css template
+* move mongodb to like not a folder in this repository

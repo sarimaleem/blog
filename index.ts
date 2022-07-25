@@ -6,12 +6,16 @@ import swaggerDocument from "./api/api.json";
 import type { WithId, Document } from "mongodb";
 import bodyParser from "body-parser";
 import showdown from "showdown";
+import path from "path";
 
 dotenv.config();
 
 // Set up express
 const app: Express = express();
 const port = process.env.PORT || 3000;
+app.use(express.static(path.join(__dirname, '../frontend')));
+console.log(path.join(__dirname, '../frontend'));
+
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.text({ type: "text/markdown" }));
 app.use(bodyParser.json());
@@ -50,12 +54,26 @@ app.get("/", (req: Request, res: Response) => {
   res.send("home page will go here at one point");
 });
 
+app.get("/test", (req: Request, res: Response) => {
+  res.send("well the site is working");
+})
+
 // require some authentication or something probably
 app.get("/testDB", async (req: Request, res: Response) => {
   const collection = db.collection("test");
   const elements = await collection.find({}).toArray();
   res.status(201).send(elements);
 });
+
+
+app.get("/testHTML", (req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, '../frontend', 'template.html'));
+});
+
+
+// app.get("/style.css", (req, res) => {
+//   res.sendFile(path.join(__dirname, '../frontend', 'style.css'));
+// })
 
 app.post("/post", (req: Request, res: Response) => {
   // if(req.headers["content-type"] !== "text/markdown") {
@@ -95,6 +113,7 @@ app.get("/post/:post", async (req: Request, res: Response) => {
 
   res.send(post.html);
 });
+
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
