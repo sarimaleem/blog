@@ -7,6 +7,8 @@ import type { WithId, Document } from "mongodb";
 import bodyParser from "body-parser";
 import showdown from "showdown";
 import path from "path";
+import parse from 'node-html-parser';
+import fs from 'fs';
 
 dotenv.config();
 
@@ -55,7 +57,13 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.get("/test", (req: Request, res: Response) => {
-  res.send("well the site is working");
+
+  const text: string = fs.readFileSync("./frontend/template.html").toString('utf-8');
+  const template = parse(text);
+  const body = template.getElementsByTagName("body")[0];
+  const test = parse("<h2>Server is up</h2>");
+  body.appendChild(test)
+  res.send(template.innerHTML);
 })
 
 // require some authentication or something probably
@@ -70,15 +78,7 @@ app.get("/testHTML", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, '../frontend', 'template.html'));
 });
 
-
-// app.get("/style.css", (req, res) => {
-//   res.sendFile(path.join(__dirname, '../frontend', 'style.css'));
-// })
-
 app.post("/post", (req: Request, res: Response) => {
-  // if(req.headers["content-type"] !== "text/markdown") {
-  //   res.status(415).send("Content Type must be text markdown in HTML header")
-  // }
   const posts = db.collection("posts");
   const postRequest = req.body as BlogPostRequest;
   const dbInsert: Post = {
@@ -100,7 +100,7 @@ app.post("/post", (req: Request, res: Response) => {
 });
 
 app.get("/post/:post", async (req: Request, res: Response) => {
-  console.log("Post Request");
+  console.log("get post request");
   
   const posts = db.collection("posts");
   const post: Post = (await posts.findOne({
@@ -111,7 +111,15 @@ app.get("/post/:post", async (req: Request, res: Response) => {
     res.send("page not found");
   }
 
-  res.send(post.html);
+  console.log(post.html);
+  
+
+  const templateString: string = fs.readFileSync("./frontend/template.html").toString('utf-8');
+  const template = parse(templateString);
+  const body = template.getElementsByTagName("body")[0];
+  const content = parse(post.html);
+  body.appendChild(content)
+  res.send(template.innerHTML);
 });
 
 
