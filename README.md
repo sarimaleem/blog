@@ -1,30 +1,35 @@
-# Blog:
+# Slog ([S]imple B[log]):
+
+## TODO
 
 **(IN PROGRESS)**
 
-Current Planned Features:
+- [x] HTML stored in database
+- [x] Site correctly renders on get request
+- [x] Pretty HTML/CSS
+- [ ] Fix navbar
+- [ ] Add Home Page
+- [ ] Update post
+- [ ] Delete post
+- [ ] Command line app to easily post 
+- [ ] Username/Password for requests
+- [ ] Protection against XSS injections
 
-* CRUD Blog Posts in markdown, options can be done from commandline
-* Mark posts as public/private (So blog can be used as a personal journal)
-* Comments optional
-* Commandline app that makes posting/updating easier
+Way in the future features
+
+- [ ] comments
 
 ## Schema Planning
 
-blog schema:
-_id (mongo)
-title (maybe unique index? assuming one author)
-raw markdown
-html
+Current schema:
+* _id
+* title (ideally part of url)
+* markdown
+* html
 
-later add:
-author
-date published
-last date updated
-tags
-private/public
-
-## TODO: 
-* all the features above
-* add basic html and css template
-* move mongodb to like not a folder in this repository
+Later add:
+* author
+* date published
+* last date updated
+* tags
+* private/public
