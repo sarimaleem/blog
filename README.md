@@ -33,23 +33,8 @@ In the future features after MVP finished
 - [ ] custom CSS themes
 - [ ] users/sign in?
 
-## Schema Planning
-
-Current schema:
-* _id
-* title (ideally part of url)
-* markdown
-* html
-
-Later add:
-* author
-* date published
-* last date updated
-* tags
-* private/public
-
 ## Tech Stack
 
  * Typescript 
  * Mongo 
- * Python
+ * Python (for tests)

@@ -1,0 +1,14 @@
+- [x] update schema in typescript
+- [x] add error handling in post request
+- [x] update/add tests
+- [ ] Add title/author/date to html on get request
+- [ ] Fix navbar CSS
+- [ ] Modularize file? (how?)
+- [ ] Add Home Page
+- [ ] Update post request
+- [ ] Delete post request
+- [ ] Command line app to easily post 
+- [ ] Username/Password for requests
+- [ ] Protection against XSS injections
+- [ ] Easy install scripts
+
