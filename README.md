@@ -10,29 +10,6 @@ Simple blog framework, key features:
 * Completely self hosted, no SEO/privacy BS. 
 * Simple
 
-
-## TODO
-
-**(IN PROGRESS)**
-
-- [x] HTML stored in database
-- [x] Site correctly renders on get request
-- [x] Pretty HTML/CSS
-- [ ] Fix navbar CSS
-- [ ] Add Home Page
-- [ ] Update post request
-- [ ] Delete post request
-- [ ] Command line app to easily post 
-- [ ] Username/Password for requests
-- [ ] Protection against XSS injections
-- [ ] Easy install scripts
-
-In the future features after MVP finished
-
-- [ ] comments
-- [ ] custom CSS themes
-- [ ] users/sign in?
-
 ## Tech Stack
 
  * Typescript 
