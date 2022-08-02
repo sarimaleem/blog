@@ -1,10 +1,13 @@
 - [x] update schema in typescript
 - [x] add error handling in post request
 - [x] update/add tests
+- [ ] transition mongodb to mongoose
 - [ ] Add title/author/date to html on get request
 - [ ] Fix navbar CSS
+- [ ] add code highlighting showdown
 - [ ] Modularize file? (how?)
 - [ ] Add Home Page
+- [ ] Add About Page
 - [ ] Update post request
 - [ ] Delete post request
 - [ ] Command line app to easily post 
